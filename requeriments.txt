@@ -1,0 +1,7 @@
+tensorflow==2.7.0
+segmentation-models==1.0.1
+ipykernel
+ipympl
+sidecar
+matplotlib
+numpy
