@@ -127,4 +127,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-/data/image_and_masks/train_imgs/train
+#/data/image_and_masks/train_imgs/train
