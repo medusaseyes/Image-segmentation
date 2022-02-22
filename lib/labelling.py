@@ -412,4 +412,4 @@ class image_segmenter:
     def _ipython_display_(self):
         display(self.render())
 
-image_segmenter('../data/image_and_masks/train_imgs', ['mother','daughter'])
+
