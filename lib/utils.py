@@ -15,10 +15,10 @@ def image_conversion(img_dir):
         print(filename)
         image = Image.open(filename)
         filename = filename.replace(chr(92), "/").replace(img_dir+"/", "")
-        print(image)
+        print(image.format)
         
-        if image.format == "tif":
-            print(image)
+        if image.format == "TIFF":
+            filename = filename.replace(".tif", ".bmp")
             image.save(f"{img_dir}/{filename}")
 """
     for i in range(1,10):    
