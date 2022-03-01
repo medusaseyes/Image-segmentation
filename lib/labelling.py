@@ -9,6 +9,8 @@ import ipywidgets as widgets
 import glob
 from matplotlib.widgets import LassoSelector
 from matplotlib.path import Path
+from lib.utils import name_generation
+
 
 __all__ = [
     'zoom_factory',
@@ -151,7 +153,7 @@ VALID_IMAGE_TYPES = ['jpeg', 'png', 'bmp', 'gif', 'jpg'] # same as supported by 
 
 
 class image_segmenter:
-    def __init__(self, img_dir, classes, overlay_alpha=.5,figsize=(10,10), scroll_to_zoom=True, zoom_scale=1.1):
+    def __init__(self, img_dir, save_cut_dir, classes, overlay_alpha=.5,figsize=(10,10), scroll_to_zoom=True, zoom_scale=1.1):
         """
         TODO allow for intializing with a shape instead of an image
         
@@ -170,6 +172,7 @@ class image_segmenter:
         """
 
         self.img_dir = img_dir
+        self.save_cut_dir = f"{save_cut_dir}/train"
 
         if not path.isdir(path.join(self.img_dir, 'train')):
             raise ValueError(f"{self.img_dir} must exist and contain the the folder 'train'")
@@ -251,6 +254,11 @@ class image_segmenter:
             button_style='',
             icon='floppy-o'
         )
+        self.cut_button = widgets.Button(
+            description='save cut',
+            button_style='',
+            icon='floppy-o'
+        )
         self.next_button = widgets.Button(
             description='next image',
             button_style='',
@@ -264,6 +272,7 @@ class image_segmenter:
         )
         self.reset_button.on_click(self.reset)
         self.save_button.on_click(self.save_mask)
+        self.cut_button.on_click(self.save_cut)
         self.next_button.on_click(self._change_image_idx)
         self.prev_button.on_click(self._change_image_idx)
         def button_click(button):
@@ -397,7 +406,7 @@ class image_segmenter:
         layers = [widgets.HBox([self.lasso_button, self.flood_button])]
         layers.append(widgets.HBox([self.reset_button, self.class_dropdown,self.erase_check_box]))
         layers.append(self.fig.canvas)   
-        layers.append(widgets.HBox([self.save_button, self.prev_button, self.next_button]))
+        layers.append(widgets.HBox([self.save_button, self.prev_button, self.next_button, self.cut_button]))
         return widgets.VBox(layers)
     def save_mask(self, save_if_no_nonzero=False):
         """
@@ -409,6 +418,10 @@ class image_segmenter:
                 io.imsave(self.mask_path, self.class_mask,check_contrast =False,quality=100)
             else:
                 io.imsave(self.mask_path, self.class_mask,check_contrast =False)
+
+    def save_cut(self, save_if_no_nonzero=False):
+        plt.savefig(f"{self.save_cut_dir}/{name_generation(self.save_cut_dir)}")
+
     def _ipython_display_(self):
         display(self.render())
 
